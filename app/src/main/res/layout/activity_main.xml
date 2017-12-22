@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_not_carousel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:padding="16dp"
+    >
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/viewpager"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.sxm.example.smoothtransindicator.SmoothTransIndicator
+            android:id="@+id/indicator_circle_line"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            app:default_color="@color/custom_blue"
+            app:distance="8dp"
+            app:distanceType="BY_LAYOUT"
+            app:indicatorType="CIRCLE_LINE"
+            app:radius="4dp"
+            app:selected_color="@color/custom_red"
+            />
+    </LinearLayout>
+</RelativeLayout>
