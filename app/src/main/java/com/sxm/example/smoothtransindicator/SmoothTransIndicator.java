@@ -17,7 +17,6 @@ import android.view.View;
 
 public class SmoothTransIndicator extends View {
 
-    private Path mPath;
     private Paint paintSelect;
     private Paint paintDefault;
     private Paint paintDismiss;
@@ -45,24 +44,23 @@ public class SmoothTransIndicator extends View {
         paintDefault = new Paint();
         paintSelect = new Paint();
         paintDismiss = new Paint();
-        mPath = new Path();
     }
 
     /**
      * 初始化画笔
      */
     private void initPaint() {
-        //实心
+        //出现
         paintSelect.setStyle(Paint.Style.FILL);
         paintSelect.setColor(mSelected_color);
         paintSelect.setAntiAlias(true);
         paintSelect.setStrokeWidth(3);
-        //空心
+        //默认
         paintDefault.setStyle(Paint.Style.FILL);
         paintDefault.setColor(mDefault_color);
         paintDefault.setAntiAlias(true);
         paintDefault.setStrokeWidth(3);
-
+        //消失
         paintDismiss.setStyle(Paint.Style.FILL);
         paintDismiss.setColor(mSelected_color);
         paintDismiss.setAntiAlias(true);
@@ -94,7 +92,7 @@ public class SmoothTransIndicator extends View {
                 mDistance = 3 * mRadius;
                 break;
             case DistanceType.BY_LAYOUT://布局等分
-                if (mIndicatorType == IndicatorType.RECT) {
+                if (mIndicatorType == IndicatorType.CIRCLE_LINE) {
                     mDistance = width / (mNum + 1);
                 } else {
                     mDistance = width / mNum;
@@ -109,7 +107,7 @@ public class SmoothTransIndicator extends View {
                 //选中
                 canvas.drawCircle(-(mNum - 1) * 0.5f * mDistance + mOffset, 0, mRadius, paintSelect);
                 break;
-            case IndicatorType.RECT://圆线
+            case IndicatorType.CIRCLE_LINE://圆线
                 int appearColor = GradientColorUtil.caculateColor(mDefault_color, mSelected_color, mPercent);
                 int dismissColor = GradientColorUtil.caculateColor(mSelected_color, mDefault_color, mPercent);
                 //第一个 线 选中 消失
@@ -119,12 +117,13 @@ public class SmoothTransIndicator extends View {
                 float bottomClose = mRadius;
                 //圆
                 RectF tip = new RectF(0, -mRadius, 0, mRadius);
-                for (int i = mPosition + 3; i <= mNum; i++) {
+                int offset = mIsLeft ? 1 : 0;
+                for (int i = mPosition + 2 + offset; i <= mNum; i++) {
                     tip.left = -(mNum) * 0.5f * mDistance + i * mDistance - mRadius;
                     tip.right = -(mNum) * 0.5f * mDistance + i * mDistance + mRadius;
                     canvas.drawRoundRect(tip, mRadius / 2, mRadius / 2, paintDefault);
                 }
-                for (int i = mPosition - 1; i >= 0; i--) {
+                for (int i = mPosition - offset; i >= 0; i--) {
                     tip.left = -(mNum) * 0.5f * mDistance + i * mDistance - mRadius;
                     tip.right = -(mNum) * 0.5f * mDistance + i * mDistance + mRadius;
                     canvas.drawRoundRect(tip, mRadius / 2, mRadius / 2, paintDefault);
@@ -146,19 +145,6 @@ public class SmoothTransIndicator extends View {
 
                 break;
         }
-    }
-
-    private Point[] mSpringPoint = new Point[6];
-
-
-    class CenterPoint {
-        float x;
-        float y;
-    }
-
-    class Point {
-        float x;
-        float y;
     }
 
     /**
@@ -193,20 +179,11 @@ public class SmoothTransIndicator extends View {
         mPercent = percent;
         mIsLeft = isLeft;
         switch (mIndicatorType) {
-            case IndicatorType.RECT://圆线
-                if (mPosition == mNum - 1 && !isLeft) {//第一个 右滑
-                    mOffset = percent * mDistance;
-                }
-                if (mPosition == mNum - 1 && isLeft) {//最后一个 左滑
-                    mOffset = percent * mDistance;
-                } else {//中间
-                    mOffset = percent * mDistance;
-                }
+            case IndicatorType.CIRCLE_LINE://圆线
+                mOffset = percent * mDistance;
                 break;
             case IndicatorType.CIRCLE://圆
-                if (mPosition == mNum - 1 && !isLeft) {//第一个 右滑
-                    mOffset = (1 - percent) * (mNum - 1) * mDistance;
-                } else if (mPosition == mNum - 1 && isLeft) {//最后一个 左滑
+                if (mPosition == mNum - 1) {
                     mOffset = (1 - percent) * (mNum - 1) * mDistance;
                 } else {//中间的
                     mOffset = (percent + mPosition) * mDistance;
@@ -246,7 +223,7 @@ public class SmoothTransIndicator extends View {
      */
     public interface IndicatorType {
         int CIRCLE = 1;
-        int RECT = 2;
+        int CIRCLE_LINE = 2;
     }
 
 
