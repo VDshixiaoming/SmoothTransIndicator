@@ -115,15 +115,16 @@ public class SmoothTransIndicator extends View {
                 float rightClose = leftClose + 2 * mRadius + mDistance - mOffset;
                 float topClose = -mRadius;
                 float bottomClose = mRadius;
-                //圆
                 RectF tip = new RectF(0, -mRadius, 0, mRadius);
                 int offset = mIsLeft ? 1 : 0;
+                //mPosition右边的圆点
                 for (int i = mPosition + 2 + offset; i <= mNum; i++) {
                     tip.left = -(mNum) * 0.5f * mDistance + i * mDistance - mRadius;
                     tip.right = -(mNum) * 0.5f * mDistance + i * mDistance + mRadius;
                     canvas.drawRoundRect(tip, mRadius / 2, mRadius / 2, paintDefault);
                 }
-                for (int i = mPosition - offset; i >= 0; i--) {
+                //mPosition左边的圆点
+                for (int i = mPosition - 1 + offset; i >= 0; i--) {
                     tip.left = -(mNum) * 0.5f * mDistance + i * mDistance - mRadius;
                     tip.right = -(mNum) * 0.5f * mDistance + i * mDistance + mRadius;
                     canvas.drawRoundRect(tip, mRadius / 2, mRadius / 2, paintDefault);
