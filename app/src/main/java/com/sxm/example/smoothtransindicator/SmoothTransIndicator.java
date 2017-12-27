@@ -19,7 +19,6 @@ public class SmoothTransIndicator extends View {
 
     private Paint paintSelect;
     private Paint paintDefault;
-    private Paint paintDismiss;
     int mNum;//个数
     float mRadius;//半径
     float mLength;//线长
@@ -43,7 +42,6 @@ public class SmoothTransIndicator extends View {
         setStyleable(context, attrs);
         paintDefault = new Paint();
         paintSelect = new Paint();
-        paintDismiss = new Paint();
     }
 
     /**
@@ -60,11 +58,6 @@ public class SmoothTransIndicator extends View {
         paintDefault.setColor(mDefault_color);
         paintDefault.setAntiAlias(true);
         paintDefault.setStrokeWidth(3);
-        //消失
-        paintDismiss.setStyle(Paint.Style.FILL);
-        paintDismiss.setColor(mSelected_color);
-        paintDismiss.setAntiAlias(true);
-        paintDismiss.setStrokeWidth(3);
     }
 
     /**
@@ -110,11 +103,9 @@ public class SmoothTransIndicator extends View {
             case IndicatorType.CIRCLE_LINE://圆线
                 int appearColor = GradientColorUtil.caculateColor(mDefault_color, mSelected_color, mPercent);
                 int dismissColor = GradientColorUtil.caculateColor(mSelected_color, mDefault_color, mPercent);
-                //第一个 线 选中 消失
+                //第一个点增长
                 float leftClose = -(mNum) * 0.5f * mDistance + mPosition * mDistance - mRadius;
                 float rightClose = leftClose + 2 * mRadius + mDistance - mOffset;
-                float topClose = -mRadius;
-                float bottomClose = mRadius;
                 RectF tip = new RectF(0, -mRadius, 0, mRadius);
                 int offset = mIsLeft ? 1 : 0;
                 //mPosition右边的圆点
@@ -129,17 +120,14 @@ public class SmoothTransIndicator extends View {
                     tip.right = -(mNum) * 0.5f * mDistance + i * mDistance + mRadius;
                     canvas.drawRoundRect(tip, mRadius / 2, mRadius / 2, paintDefault);
                 }
-                RectF rectClose = new RectF(leftClose, topClose, rightClose, bottomClose);// 设置个新的长方形
+                RectF rectClose = new RectF(leftClose, -mRadius, rightClose, mRadius);// 设置个新的长方形
                 paintSelect.setColor(dismissColor);
-                paintDismiss.setColor(dismissColor);
                 canvas.drawRoundRect(rectClose, mRadius / 2, mRadius / 2, paintSelect);
-                //第二个 线  显示
+                //第二个点消失
                 if (mPosition < mNum - 1) {
                     float rightOpen = -(mNum) * 0.5f * mDistance + (mPosition + 2) * mDistance + mRadius;
                     float leftOpen = rightOpen - 2 * mRadius - mOffset;
-                    float topOpen = -mRadius;
-                    float bottomOpen = mRadius;
-                    RectF rectOpen = new RectF(leftOpen, topOpen, rightOpen, bottomOpen);// 设置个新的长方形
+                    RectF rectOpen = new RectF(leftOpen, -mRadius, rightOpen, mRadius);// 设置个新的长方形
                     paintSelect.setColor(appearColor);
                     canvas.drawRoundRect(rectOpen, mRadius / 2, mRadius / 2, paintSelect);
                 }
